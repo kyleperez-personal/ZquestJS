@@ -1,0 +1,94 @@
+<!-- Gui of the game to stream to -->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+  				background-color : black;
+			}
+			div.InfoTerminal {
+				width : 45vw;
+				height : 90vh;
+				position : absolute;
+				top : 0vh;
+				left : 5vw;
+				text-align : left;
+				color : black;
+				overflow-y : auto;/*Should allow Scrolling*/
+			}
+			div.StoryTerminal {
+				width : 45vw;
+				height : 90vh;
+				position : absolute;
+				top : 0vh;
+				left : 55vw;
+				text-align : left;
+				color : black;
+				overflow-y : auto;
+			}
+			div.Stream {
+				font-size : 5vh;
+				color : white;
+			}
+			input.Info {
+				width : 25vw;
+				height : 3vh;
+				position : absolute;
+				top : 91vh;
+				left : 20vw;
+				text-align : left;
+				color : grey;
+			}
+			input.Story {
+				width : 25vw;
+				height : 3vh;
+				position : absolute;
+				top : 91vh;
+				left : 70vw;
+				text-align : left;
+				color : grey;
+			}
+			/*
+			button.exit {
+				onclick : exit.js;
+			}
+			*/
+		</style>
+		 
+		<meta charset="UTF-8">
+		<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+		<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+		<title>My Program</title>
+
+	</head>
+
+	<body>
+		<body>
+			<!-- Terminal where game information gets output! -->
+			<div class="InfoTerminal">
+				<!-- Stream stuff here -->
+				<<div class="Stream" id="infostream" name="infostream">I want to write to here</div>
+	
+			</div>
+			<!-- Text input box for the info terminal! -->
+			<input class="Info" id="infoinput" type="text" name="infoinput" size="40"/> 
+	
+	
+			<!-- Terminal where the story gets output! -->
+			<div class="StoryTerminal">
+				<!--Stream stuff here-->
+				<div class="Stream" id="storystream">After his ordination, Eliot moved to St. Louis, where he lived for the rest of his life, until 1887. There he founded the Church of the Messiah, the first Unitarian church west of the Mississippi River. Today it is called the First Unitarian Church of Saint Louis. He led the congregation from 1834 to 1870, through a period of rapid expansion of the city.
+	
+					Eliot was active in civic life and was instrumental in founding many civic institutions, including the St. Louis Public Schools, the Saint Louis Art Museum, Mission Free School, South Side Day Nursery, and the Western Sanitary Commission to provide medical care and supplies during the Civil War. In 1861, he was part of a small group of men who helped Generals Nathaniel Lyon and Francis P. Blair to retain Missouri in the Union. He contributed to the development of the Colored Orphans' Home, Soldiers' Orphans' Home, Memorial Home, Blind Girls' Home, Women's Christian Home, and other charitable institutions. When Ralph Waldo Emerson visited St. Louis, he met Eliot and called him "the Saint of the West</div>
+			</div>
+			<!-- Text input box for the story! -->
+			<input class="Story" type="text" name="fname" size="40"/> 
+	
+			<!-- You can also require other files to run in this process -->
+			<script src="./renderer.js"></script>
+		</body>
+		<script src="./test.js"></script>
+	</body>
+</html>

@@ -1,0 +1,101 @@
+<!-- Gui of the game to stream to -->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+  				background-color : black;
+			}
+			div.InfoTerminal {
+				width : 45vw;
+				height : 90vh;
+				position : absolute;
+				top : 0vh;
+				left : 5vw;
+				text-align : left;
+				color : black;
+				overflow-y : auto;/*Should allow Scrolling*/
+			}
+			div.StoryTerminal {
+				width : 45vw;
+				height : 90vh;
+				position : absolute;
+				top : 0vh;
+				left : 55vw;
+				text-align : left;
+				color : black;
+				overflow-y : auto;
+			}
+			div.Stream {
+				font-size : 5vh;
+				color : white;
+			}
+			input.Info {
+				width : 25vw;
+				height : 3vh;
+				position : absolute;
+				top : 91vh;
+				left : 20vw;
+				text-align : left;
+				color : grey;
+			}
+			input.Story {
+				width : 25vw;
+				height : 3vh;
+				position : absolute;
+				top : 91vh;
+				left : 70vw;
+				text-align : left;
+				color : grey;
+			}
+		</style>
+		 
+		<meta charset="UTF-8">
+		<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+		
+		<!-- Content Security Stuff -->
+		<!--
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'">
+		<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'">
+		-->
+		<!--
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+		<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+		-->
+		
+		<title>My Program</title>
+
+	</head>
+
+	<body>
+		<!-- Terminal where game information gets output! -->
+		<div class="InfoTerminal">
+			<!-- Stream stuff here -->
+			<div class="Stream" id="infostream" name="infostream"></div>
+
+		</div>
+		<!-- Text input box for the info terminal! -->
+		<input class="Info" id="infoinput" type="text" name="infoinput" size="40" spellcheck="false"/> 
+
+
+		<!-- Terminal where the story gets output! -->
+		<div class="StoryTerminal">
+			<!--Stream stuff here-->
+			<div class="Stream" id="storystream"></div>
+		</div>
+		<!-- Text input box for the story! -->
+		<input class="Story" id="storyinput" type="text" name="storyinput" size="40" spellcheck="false"/> 
+
+		<!-- File Includes -->
+
+		<!-- Globals -->
+		<!--<script type="module" src="./globals/attributes/global_attributes.js"></script>-->
+
+
+		<<script type="module" src="./renderer.js"></script>
+		
+		<!--<script type="module" src="./globals/write/write.js"></script>-->
+		<!--<script type="module" src="./my_module.js"></script>-->
+	</body>
+</html>

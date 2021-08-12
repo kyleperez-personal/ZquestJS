@@ -1,0 +1,7 @@
+For updating the gui:
+
+	1. When 'Enter' is hit on the respective text box, read the string contained within
+	2. Use the string as an argument in whatever current function is being run
+	
+	3. Current function adds strings to the stack of the system
+	4. Print out stack of the system.
