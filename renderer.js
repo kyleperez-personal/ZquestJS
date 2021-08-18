@@ -23,6 +23,10 @@ import * as Test from './game.js';
 //Engine.GUI.AddListeners();
 //GUI.Stream.AddListeners();
 
+//Engine.GUI.PushtoStorystack(output.dialogue("Kyle Perez", "Hello World!"));
+//Engine.GUI.WriteStorystream();
+Engine.Story.WriteDialogue("Kyle Perez", "Hello World!")
+
 Test.game();
 
 

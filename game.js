@@ -1,7 +1,6 @@
 //import * as test from './character_create/set_age/set_age.js';
 //import * as GUI from './engine/stream.js';
 import * as Engine from './engine/engine.js';
-import * as output from './engine/format/output_format.js';
 
 let get_age_fnc = Engine.Story.Wrap(get_age);
 let confirm_age_fnc = Engine.Story.Wrap(do_confirm);
@@ -12,6 +11,7 @@ export function game() {
 	let age = 0;
 	let age_is_confirmed = false;
 
+	Engine.Info.Run(Engine.Info.FreeInput);
 	Engine.Story.Run( get_age_fnc, age_question );
 	
 
@@ -22,7 +22,8 @@ export function game() {
 function age_question() {
 
 	//GUI.Stream.UpdateStorystream(output.question("How old are you?"));
-	Engine.GUI.UpdateStorystream(output.question("How old are you?"));
+	//Engine.GUI.UpdateStorystream(output.question("How old are you?"));
+	Engine.GUI.WritetoStorystream("How old are you?", "question");
 	return;
 
 }
@@ -32,8 +33,12 @@ function echo_age([age]) {
 
 	//GUI.Stream.UpdateStorystream(output.stream("You are " + age + " years old"));
 	//GUI.Stream.UpdateStorystream(output.stream("Is this alright? Yes or No."));
+	/*
 	Engine.GUI.UpdateStorystream(output.stream("You are " + age + " years old"));
 	Engine.GUI.UpdateStorystream(output.stream("Is this alright? Yes or No."));
+	*/
+	Engine.GUI.WritetoStorystream("You are " + age + " years old.");
+	Engine.GUI.WritetoStorystream("Is this alright? Yes or No.", "question");
 
 }
 
@@ -63,7 +68,8 @@ function get_age(age) {
 		return;
 	}
 	else {
-		Engine.GUI.UpdateStorystream(output.notice("Invalid entry! Number must be between 18 and 65!"));
+		//Engine.GUI.UpdateStorystream(output.notice("Invalid entry! Number must be between 18 and 65!"));
+		Engine.GUI.WritetoStorystream("Invalid entry! Number must be between 18 and 65!", "notice");
 		//GUI.Stream.UpdateStorystream(output.notice("Invalid entry! Number must be between 18 and 65!"));
 		//queue(get_age);
 	}
@@ -77,12 +83,14 @@ function do_confirm() {
 	// If age is alright, remove old event listener and terminate
 	//if ( GUI.Stream.StorystreamInput() == "Yes" ) {
 	if ( Engine.GUI.StorystreamInput() == "Yes" ) {
-		Engine.GUI.UpdateStorystream(output.stream("Age confirmed!"));
+		//Engine.GUI.UpdateStorystream(output.stream("Age confirmed!"));
+		Engine.GUI.WritetoStorystream("Age confirmed!");
 		//GUI.Stream.UpdateStorystream(output.stream("Age confirmed!"));
 		//GUI.story_input_box.removeEventListener('keyup', do_confirm);
 		//GUI.story_input_box.removeEventListener( 'keyup', g );
 		//dequeue(do_confirm);
 		Engine.Story.Remove(confirm_age_fnc);
+		Engine.Story.Run(Engine.Story.FreeInput);
 		//alt_dequeue(ca);
 
 		return;
@@ -91,7 +99,8 @@ function do_confirm() {
 	// then reload get_age function
 	//else if ( GUI.Stream.StorystreamInput() == "No" ) {
 	else if ( Engine.GUI.StorystreamInput() == "No" ) {
-		Engine.GUI.UpdateStorystream(output.stream("Age not confirmed!"));
+		//Engine.GUI.UpdateStorystream(output.stream("Age not confirmed!"));
+		Engine.GUI.WritetoStorystream("Age not confirmed!");
 		//GUI.Stream.UpdateStorystream(output.stream("Age not confirmed!"));
 		//GUI.story_input_box.removeEventListener('keyup', do_confirm);
 		//GUI.story_input_box.addEventListener('keyup', get_age);
@@ -108,7 +117,8 @@ function do_confirm() {
 		return;
 	}
 	else {
-		Engine.GUI.UpdateStorystream( output.try_again() );
+		//Engine.GUI.UpdateStorystream( output.try_again() );
+		Engine.GUI.TryAgain();
 		//GUI.Stream.UpdateStorystream( output.try_again() );
 		//queue(do_confirm);
 	}

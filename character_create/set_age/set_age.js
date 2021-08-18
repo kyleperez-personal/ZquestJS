@@ -1,9 +1,8 @@
 // Includes
 import * as globals from '../../globals/attributes/global_attributes.js';
-import * as output from '../../globals/capitalization/output_format.js';
 import * as format from '../../globals/capitalization/format_functions.js';
-import * as userflow from '../../globals/converse/userflow.js';
-import * as GUI from '../../engine/stream.js';
+//import * as userflow from '../../globals/converse/userflow.js';
+import * as Engine from '../../engine/engine.js';
 
 export function set_age() {
 
@@ -47,7 +46,8 @@ function pick_age( number ) {
 
 	while ( true ) {
 
-		GUI.Stream.UpdateStorystream(output.question("How old are you?\n Enter a number: "));
+		//GUI.Stream.UpdateStorystream(output.question("How old are you?\n Enter a number: "));
+		Engine.GUI.WritetoStorystream("How old are you?\n Enter a number: ", "question");
 		/*
 		write.update_storystream(
 			output.question("How old are you?"),
@@ -60,7 +60,8 @@ function pick_age( number ) {
 		);
 		*/
 
-		GUI.Stream.UpdateStorystream("Your age: ");
+		//GUI.Stream.UpdateStorystream("Your age: ");
+		Engine.GUI.WritetoStorystream("Your age: ");
 		/*
 		write.update_storystream(
 			output.stream("Your age: "),
@@ -78,7 +79,8 @@ function pick_age( number ) {
 			if ( globals.MIN_PLAYER_AGE <= age && age <= globals.MAX_PLAYER_AGE ) return;
 			else {
 
-				GUI.Stream.UpdateStorystream(output.notice("Age condition not satisfied!"));
+				//GUI.Stream.UpdateStorystream(output.notice("Age condition not satisfied!"));
+				Engine.GUI.WritetoStorystream("Age condition not satisfied!", "notice");
 				/*
 				write.update_storystream(
 					output.notice("Age condition not satisfied!"),
@@ -89,9 +91,8 @@ function pick_age( number ) {
 
 		}
 		else {
-			GUI.Stream.UpdateStorystream(
-				output.notice("Your input is not the correct length!"),
-			);
+			//GUI.Stream.UpdateStorystream(output.notice("Your input is not the correct length!"));
+			Engine.GUI.WritetoStorystream("Your input is not the correct length!", "notice");
 			/*
 			write.update_storystream(
 				output.notice("Your input is not the correct length!"),
