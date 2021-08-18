@@ -1,0 +1,73 @@
+body {
+	background-color: black;
+}
+div.InfoTerminal {
+	width: 45vw;
+	height: 90vh;
+	position: absolute;
+	top: 0vh;
+	left: 5vw;
+	text-align: left;
+	color: black;
+	overflow-y: auto;/*Should allow Scrolling*/
+}
+div.StoryTerminal {
+	width: 45vw;
+	height: 90vh;
+	position: absolute;
+	top: 0vh;
+	left: 55vw;
+	text-align: left;
+	color: black;
+	overflow-y: auto;
+}
+div.Stream {
+	font-size: 5vh;
+	color: white;
+}
+input.Info {
+	width: 25vw;
+	height: 3vh;
+	position: absolute;
+	top: 91vh;
+	left: 20vw;
+	text-align: left;
+	color: grey;
+}
+input.Story {
+	width: 25vw;
+	height: 3vh;
+	position: absolute;
+	top: 91vh;
+	left: 70vw;
+	text-align: left;
+	color: grey;
+}
+
+/*Formatting of stuff*/
+span {
+	font-size: 5vh;
+}
+span.Stream {
+	color: white;
+}
+span.Picked {
+	color: grey;
+}
+span.Question {
+	color: lightblue;
+}
+span.Notice {
+	color: red;
+}
+span.Info {
+	color: blue;
+}
+
+/*Dialogue stuff*/
+span.Character {
+	color: lightblue;
+}
+span.Dialogue {
+	color: white;
+}

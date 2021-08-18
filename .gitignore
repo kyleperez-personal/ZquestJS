@@ -1,3 +1,4 @@
 # Ignore node JS
 node_modules/
 desktop.ini
+gitstuff.txt
