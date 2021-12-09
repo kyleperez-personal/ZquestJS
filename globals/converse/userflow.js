@@ -1,6 +1,6 @@
 // Includes
 //import * as globals from '../attributes/global_attributes.js';
-import * as GUI from '../write/stream.js';
+import * as GUI from '../../engine/gui.js';
 import * as fix from '../capitalization/format_functions.js';
 import * as format from '../capitalization/output_format.js';
 

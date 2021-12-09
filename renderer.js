@@ -8,9 +8,10 @@
 //import * as write from './globals/write/write.js';
 //import * as output from './globals/capitalization/output_format.js';
 
-import * as Engine from './engine/engine.js';
+import * as GUI from './engine/gui.js';
 //import * as GUI from './engine/stream.js';
 import * as Test from './game.js';
+//import * as Popup from './popup.js';
 // Note the info and story input sections
 //const info_input_box = document.getElementById('infoinput');
 //const story_input_box = document.getElementById('storyinput');
@@ -25,9 +26,19 @@ import * as Test from './game.js';
 
 //Engine.GUI.PushtoStorystack(output.dialogue("Kyle Perez", "Hello World!"));
 //Engine.GUI.WriteStorystream();
-Engine.Story.WriteDialogue("Kyle Perez", "Hello World!")
+//Engine.Story.WriteDialogue("Kyle Perez", "Hello World!")
 
+
+//Popup.GenderWindow();
 Test.game();
+
+/*
+function closeForm() {
+	let modal = document.getElementById("myModal");
+	modal.style.display = "none";
+
+}
+*/
 
 
 /*
