@@ -56,6 +56,7 @@ export class Story {
 					if ( !GUI.Stream.HasRunCommand() ) {
 						GUI.Stream.WritetoStorystream( ">> " + GUI.Stream.StorystreamInput() );
 						some_func();
+						Storystream.scrollIntoView(false);
 					}//end if
 			}//end switch
 		}//end f
@@ -122,6 +123,7 @@ export class Info {
 					if ( !GUI.Stream.HasRunCommand() ) {
 						GUI.Stream.WritetoInfostream( ">> " + GUI.Stream.InfostreamInput() );
 						some_func();
+						Infostream.scrollIntoView(false);
 					}
 			}
 		}

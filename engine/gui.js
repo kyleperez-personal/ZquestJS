@@ -146,7 +146,7 @@ export class Stream {
 		Infostream.appendChild(newdiv);
 
 		// If storystream too long, remove first element
-		if ( Infostream.children.length >= GUI.#_MaxStackSize ) {
+		if ( Infostream.children.length >= Stream.#_MaxStackSize ) {
 			Infostream.removeChild(Infostream.children[0]);
 		}
 
@@ -190,7 +190,7 @@ export class Stream {
 				Storystream.scrollIntoView(false);
 				break;
 			case "clear hard":
-				while ( Storystream.firstChild ) Storystream.removeChild(firstChild);
+				while ( Storystream.firstChild ) Storystream.removeChild(Storystream.firstChild);
 				break;
 			case "help":
 				Stream.WritetoStorystream("Help here");
@@ -216,7 +216,7 @@ export class Stream {
 				Infostream.scrollIntoView(false);
 				break;
 			case "clear hard":
-				while ( Infostream.firstChild ) Infostream.removeChild(firstChild);
+				while ( Infostream.firstChild ) Infostream.removeChild(Infostream.firstChild);
 				break;
 			case "help":
 				Stream.WritetoInfostream("Help here");

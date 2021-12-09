@@ -10,6 +10,7 @@ div.InfoTerminal {
 	text-align: left;
 	color: black;
 	overflow-y: auto;/*Should allow Scrolling*/
+	z-index: 0;
 }
 div.StoryTerminal {
 	width: 45vw;
@@ -20,10 +21,12 @@ div.StoryTerminal {
 	text-align: left;
 	color: black;
 	overflow-y: auto;
+	z-index: 0;
 }
 div.Stream {
 	font-size: 5vh;
 	color: white;
+	z-index: 0;
 }
 input.Info {
 	width: 25vw;
@@ -33,6 +36,7 @@ input.Info {
 	left: 20vw;
 	text-align: left;
 	color: grey;
+	z-index: 0;
 }
 input.Story {
 	width: 25vw;
@@ -42,6 +46,7 @@ input.Story {
 	left: 70vw;
 	text-align: left;
 	color: grey;
+	z-index: 0;
 }
 
 /*Formatting of stuff*/
@@ -77,7 +82,6 @@ span.Dialogue {
 div.PopWindow {
 	display: none; /* Hidden by default */
 	position: fixed; /* Stay in place */
-	z-index: 1; /* Sit on top */
 	padding-top: 100px; /* Location of the box */
 	left: 0;
 	top: 0;
@@ -86,6 +90,7 @@ div.PopWindow {
 	overflow: auto; /* Enable scroll if needed */
 	background-color: rgb(0,0,0); /* Fallback color */
 	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	z-index: 1; /* Sit on top */
 }
 div.PopWindowContent {
 	background-color: #fefefe;
@@ -93,6 +98,47 @@ div.PopWindowContent {
 	padding: 20px;
 	border: 1px solid #888;
 	width: 80%;
+	z-index: 1; /* Sit on top */
  }
+
+
+ /* Start Screen Info */
+div.StartScreen {
+	position: absolute; /* Stay in place */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,1.0); /* Black w/ opacity */
+	z-index: 2; /* Sit on top */
+}
+div.GameTitle {
+	font-size: 5vh;
+	color: white;
+	text-align: center;
+	position: absolute; /* Stay in place */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,1.0); /* Black w/ opacity */
+	z-index: 2; /* Sit on top */
+}
+
+button.StartButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	padding: 5vw 10vh;
+	z-index: 2; /* Sit on top */
+}
 
 
