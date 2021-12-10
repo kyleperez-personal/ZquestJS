@@ -1,8 +1,7 @@
 // Includes
 //import * as globals from '../attributes/global_attributes.js';
-import * as GUI from '../../engine/gui.js';
-import * as fix from '../capitalization/format_functions.js';
-import * as format from '../capitalization/output_format.js';
+import * as GUI from '../engine/gui.js';
+import * as fix from '../engine/format/format_functions.js';
 
 
 export function user_answer(

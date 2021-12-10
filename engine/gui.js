@@ -1,8 +1,4 @@
-import * as Globals from '../globals/attributes/global_attributes.js';
-
-
-
-
+import * as Constants from './constants.js';
 
 
 const InfoInputBox = document.getElementById('infoinput');
@@ -21,7 +17,7 @@ export class Stream {
 	static Tab(i=1) { return GUI.#_Tab.repeat(i); }
 
 	// Max allowable length of the streams
-	static #_MaxStackSize = Globals.MAX_STACK_SIZE;
+	static #_MaxStackSize = Constants.MAX_STACK_SIZE;
 
 	// Whether or not the just run input is a reserved command
 	static #_HasRunCommand = false;

@@ -1,5 +1,5 @@
 import * as GUI from '../engine/gui.js';
-import * as Game from "../test.js"
+import * as SetAge from '../character_create/set_age/set_age.js';
 
 export function load() {
 
@@ -12,6 +12,6 @@ function hide_screen() {
 
 	StartScreen.style.display = "none";
 
-	Game.game();
+	SetAge.set_age();
 
 }
