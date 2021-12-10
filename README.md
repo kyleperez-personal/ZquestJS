@@ -1,5 +1,6 @@
 # ZquestJS
 An in-progress game written in Javascript; run in an Electron framework
+Currently basic framework in progress
 
 # Requirements:
 NodeJS
