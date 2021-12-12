@@ -7,6 +7,10 @@ const StoryInputBox = document.getElementById('storyinput');
 const Infostream = document.getElementById('infostream');
 const Storystream = document.getElementById('storystream');
 
+// General use popup window and content
+//const PopWindow = document.getElementById('PopWin');
+//const PopWindowContent = document.getElementById('PopWinCont');
+
 
 
 // Class that holds all the relevant information of the gui.
@@ -247,4 +251,4 @@ export class Stream {
 
 
 
-}//end class
+}//end class Stream
