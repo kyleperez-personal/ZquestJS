@@ -1,0 +1,1 @@
+export const cool_thing = 1;
