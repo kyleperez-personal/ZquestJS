@@ -1,6 +1,15 @@
 import * as GUI from '../engine/gui.js';
 import * as AgeConstants from './set_age/contants.js';
 import * as Element from '../engine/elements.js';
+import * as Gender from './set_gender/genders.js';
+import * as Race from './set_race/races.js';
+import * as Realm from './set_locations/realms.js';
+
+// TODO
+/*
+	Put Holy Orders into thier own file
+	Finish Career and Backgrounds sections
+*/
 // NOTICE:
 // Currently input for text boxes doesn't work!
 
@@ -34,6 +43,20 @@ import * as Element from '../engine/elements.js';
 		class RealmSelect
 		class Realmoption
 
+		class Regionbox
+		class RegionLabel
+		class RegionSelect
+		class Regionoptions
+
+		class HolyOrderbox
+		class JoinHolyOrderSelect
+		class JoinHolyOrderLabel
+		class JoinHolyOrderoption
+
+		class HolyOrderSelect
+		class HolyOrderoption
+		class HolyOrderLabel
+
 		class Confirm
 		class ConfirmButton
 */
@@ -53,8 +76,11 @@ import * as Element from '../engine/elements.js';
 const PopWindow = document.getElementById('PopWin');
 const PopWindowContent = document.getElementById('PopWinCont');
 
+// Need to usee this as a global variable to make things work
+let warningMessagePrinted = false;
 
 
+// Make the character creation form
 export function CharacterCreate() {
 
 	createTitle();
@@ -63,7 +89,7 @@ export function CharacterCreate() {
 	createAgebox();
 	createRacebox();
 	createLocationbox();
-	// createHolyOrderbox();
+	createHolyOrderbox();
 	// createCareerbox();
 	// createBackgroundbox();
 
@@ -124,10 +150,11 @@ function createGenderbox() {
 	gender_select.className = "GenderSelect";
 	gender_select.name = "GenderSelect";
 
-	// add male and female options
-	gender_select.appendChild( Element.createOption("Male", "male", "Genderoption") );
-	gender_select.appendChild( Element.createOption("Female", "female", "Genderoption") );
-	
+	// Create male and female gender options
+	// If really want to, can add more in genders.js file
+	// Construct below lets us do so easily!
+	Gender.Genders.forEach( function(element) { gender_select.appendChild( Element.createOption(element.name(), element.value(), "Genderoption") ); } );
+
 	// add genders to selection
 	genderbox.appendChild(gender_select);
 
@@ -163,33 +190,14 @@ function createRacebox() {
 	let race_select = document.createElement('select');
 	race_select.className = "RaceSelect";
 	race_select.name = "RaceSelect";
+	race_select.id = "RaceSelect";
 
-	// Maybe want to implement this into a genders.js file!
-	race_select.appendChild( Element.createOption("Foyerian", "foyerian", "Raceoption") );
-	race_select.appendChild( Element.createOption("Vitalian", "vitalian", "Raceoption") );
-	race_select.appendChild( Element.createOption("Orieni Highlander", "orieni highlander", "Raceoption") );
-	race_select.appendChild( Element.createOption("Convent Auroran", "convent auroran", "Raceoption") );
-	race_select.appendChild( Element.createOption("Imperial", "imperial", "Raceoption") );
-	race_select.appendChild( Element.createOption("Kathaic", "kathaic", "Raceoption") );
-	race_select.appendChild( Element.createOption("Thurop", "thurop", "Raceoption") );
-	race_select.appendChild( Element.createOption("Cstphene", "cstphene", "Raceoption") );
-	race_select.appendChild( Element.createOption("Entranan", "entranan", "Raceoption") );
-	race_select.appendChild( Element.createOption("Fetan", "fetan", "Raceoption") );
-	race_select.appendChild( Element.createOption("Ralois", "ralois", "Raceoption") );
-	race_select.appendChild( Element.createOption("Hanoir", "hanoir", "Raceoption") );
-	race_select.appendChild( Element.createOption("Nerhest", "nerhest", "Raceoption") );
-	race_select.appendChild( Element.createOption("Aryan", "aryan", "Raceoption") );
-	race_select.appendChild( Element.createOption("Tiblan", "tiblan", "Raceoption") );
-	race_select.appendChild( Element.createOption("Sophene", "sophene", "Raceoption") );
-	race_select.appendChild( Element.createOption("Algus", "algus", "Raceoption") );
-	race_select.appendChild( Element.createOption("Anoch", "anoch", "Raceoption") );
-	race_select.appendChild( Element.createOption("Dessan", "dessan", "Raceoption") );
-	race_select.appendChild( Element.createOption("Rihden", "rihden", "Raceoption") );
-	race_select.appendChild( Element.createOption("Inden", "inden", "Raceoption") );
-	race_select.appendChild( Element.createOption("Sinias", "sinias", "Raceoption") );
-	race_select.appendChild( Element.createOption("Mokven", "mokven", "Raceoption") );
-	race_select.appendChild( Element.createOption("Vanois", "vanois", "Raceoption") );
+	// Populate races to 'select'
+	Race.Races.forEach( function(element) { race_select.appendChild( Element.createOption(element.name(), element.value(), "Raceoption") ); } );
 
+	// If race changes from Convent Auroran to something else
+	// or something else to Convent Auroran, need to print messages
+	race_select.onchange = updateOrderWarnings;
 
 	racebox.appendChild(race_select);
 
@@ -214,9 +222,9 @@ function createLocationbox() {
 	realm_select.onchange = repopulateRegions;
 
 	// Add realms
-	realm_select.appendChild( Element.createOption("The Highlands", "highlands", "Realmoption") );
-	realm_select.appendChild( Element.createOption("The Empire of the Eternal Warlord", "empire", "Realmoption") );
+	Realm.Realms.forEach( function(element) { realm_select.appendChild( Element.createOption(element.name(), element.value(), "Realmoption") ); } );
 
+	// Add selection box
 	locationbox.appendChild(realm_select);
 	PopWindowContent.appendChild(locationbox);
 
@@ -232,19 +240,15 @@ function createLocationbox() {
 	region_select.id = "RegionSelect";
 	region_select.name = "RegionSelect";
 
-	PopWindowContent.appendChild(region_select);
+	regionbox.appendChild(region_select);
+
+	PopWindowContent.appendChild(regionbox);
 	repopulateRegions();
 
 }
 
 
 function repopulateRegions() {
-	/*
-	Regionbox
-	RegionLabel
-	RegionSelect
-	Regionoptions
-	*/
 	
 	// Get the value of RealmSelect
 	let realm = document.getElementById('RealmSelect').value;
@@ -252,76 +256,142 @@ function repopulateRegions() {
 
 	// Then remove the children of the region_select options
 	while ( region_options.firstChild ) region_options.removeChild(region_options.firstChild)
-
-	// Then generate new region options for picked realm
-	switch(realm) {
-
-		case "highlands":
-			region_options.appendChild( Element.createOption("Foyer", "foyer", "Regionoption") );
-			region_options.appendChild( Element.createOption("Vility", "vility", "Regionoption") );
-			region_options.appendChild( Element.createOption("Zarata", "zarata", "Regionoption") );
-			region_options.appendChild( Element.createOption("Narena", "narena", "Regionoption") );
-			region_options.appendChild( Element.createOption("Centa", "centa", "Regionoption") );
-			region_options.appendChild( Element.createOption("Betiera", "betiera", "Regionoption") );
-			region_options.appendChild( Element.createOption("Pallon", "pallon", "Regionoption") );
-			region_options.appendChild( Element.createOption("Ostorn", "ostorn", "Regionoption") );
-			region_options.appendChild( Element.createOption("Lifus", "lifus", "Regionoption") );
-			region_options.appendChild( Element.createOption("Sonal", "sonal", "Regionoption") );
-			region_options.appendChild( Element.createOption("Deseret", "deseret", "Regionoption") );
-			region_options.appendChild( Element.createOption("Anglia", "anglia", "Regionoption") );
-			region_options.appendChild( Element.createOption("Halfon", "halfon", "Regionoption") );
-			region_options.appendChild( Element.createOption("Era Free Trade", "eft", "Regionoption") );
+	
+	// Populate choosable realms
+	for ( let rlm of Realm.Realms ) {
+		if ( rlm.value() == realm ) {
+			rlm.regions().forEach( function(element) { region_options.appendChild( Element.createOption(element.name(), element.value(), "Realmoption") ); });
 			return;
-		case "empire":
-			region_options.appendChild( Element.createOption("Imperia", "imperia", "Regionoption") );
-			region_options.appendChild( Element.createOption("Valle", "valle", "Regionoption") );
-			region_options.appendChild( Element.createOption("Petral", "petral", "Regionoption") );
-			region_options.appendChild( Element.createOption("Aurora Nova", "aurora nova", "Regionoption") );
-			region_options.appendChild( Element.createOption("Coulon", "coulon", "Regionoption") );
-			region_options.appendChild( Element.createOption("Enrenan", "enrenan", "Regionoption") );
-			region_options.appendChild( Element.createOption("Hiten", "hiten", "Regionoption") );
-			region_options.appendChild( Element.createOption("Kathay", "kathay", "Regionoption") );
-			region_options.appendChild( Element.createOption("Thurop", "thurop", "Regionoption") );
-			region_options.appendChild( Element.createOption("Entrana", "entrana", "Regionoption") );
-			region_options.appendChild( Element.createOption("Ralaer", "ralaer", "Regionoption") );
-			region_options.appendChild( Element.createOption("Hanor", "hanor", "Regionoption") );
-			region_options.appendChild( Element.createOption("Fetedal", "fetedal", "Regionoption") );
-			region_options.appendChild( Element.createOption("Nerhast", "nerhast", "Regionoption") );
-			region_options.appendChild( Element.createOption("Cstphon", "cstphon", "Regionoption") );
-			region_options.appendChild( Element.createOption("Arya", "arya", "Regionoption") );
-			region_options.appendChild( Element.createOption("Tiblus", "tiblus", "Regionoption") );
-			region_options.appendChild( Element.createOption("Sophos", "sophos", "Regionoption") );
-			region_options.appendChild( Element.createOption("Alges", "alges", "Regionoption") );
-			region_options.appendChild( Element.createOption("Anoch", "anoch", "Regionoption") );
-			region_options.appendChild( Element.createOption("Edessa", "edessa", "Regionoption") );
-			region_options.appendChild( Element.createOption("Rihde", "rihde", "Regionoption") );
-			region_options.appendChild( Element.createOption("Inden", "inden", "Regionoption") );
-			region_options.appendChild( Element.createOption("Siniasus", "siniasus", "Regionoption") );
-			region_options.appendChild( Element.createOption("Mokvon", "mokvon", "Regionoption") );
-			region_options.appendChild( Element.createOption("Vanas", "vanas", "Regionoption") );
+		}
+	}
+
+}
+
+
+function createHolyOrderbox() {
+
+	let holyorderbox = document.createElement('div');
+	holyorderbox.className = "HolyOrderbox";
+	holyorderbox.id = "HolyOrderbox";
+
+	// Whether or not you are in a holy order label
+	holyorderbox.appendChild( Element.createLabel("Member of a Holy Order? ", "JoinHolyOrderSelect", "JoinHolyOrderLabel") );
+
+	// Add selection box for picking if in holy order or not
+	let joinholyorder_select = document.createElement('select');
+	joinholyorder_select.className = "JoinHolyOrderSelect";
+	joinholyorder_select.name = "JoinHolyOrderSelect";
+	joinholyorder_select.id = "JoinHolyOrderSelect";
+	// If Yes, then show holy orders and no, hide them
+	joinholyorder_select.onchange = repopulateHolyOrders;
+
+	// Choices (yes and no) here
+	joinholyorder_select.appendChild( Element.createOption("No", "no", "JoinHolyOrderoption") );
+	joinholyorder_select.appendChild( Element.createOption("Yes", "yes", "JoinHolyOrderoption") );
+
+	holyorderbox.appendChild(joinholyorder_select);
+	PopWindowContent.appendChild(holyorderbox);
+
+}
+
+// If want to be in holy order, show the choices
+// if swap from yes to no, hide them
+function repopulateHolyOrders() {
+	
+	let holyorderbox = document.getElementById('HolyOrderbox');
+	let answer = document.getElementById('JoinHolyOrderSelect').value;
+
+	switch(answer) {
+
+		// If no, need to remove holy order selection info
+		case "no":
+			// Need to check if Convent Auroran is the currently selected race
+			let race = document.getElementById('RaceSelect').value;
+			let order_choice = document.getElementById('HolyOrderSelect').value;
+
+			if ( warningMessagePrinted ) holyorderbox.removeChild(holyorderbox.lastChild);
+			holyorderbox.removeChild(holyorderbox.lastChild);
+			holyorderbox.removeChild(holyorderbox.lastChild);
+			
 			return;
-		// Add other realms here
-		/*
-		case "somerealm":
-			region_options.appendChild( Element.createOption("Name", name, "Regionoption") );
-		*/
+		// If yes, need to add holy order selection info
+		case "yes":
+			// Label
+			holyorderbox.appendChild( Element.createLabel("Holy Order: ", "HolyOrderSelect", "HolyOrderLabel") );
+			// Add selection box for picking holy order
+			let holyorder_select = document.createElement('select');
+			holyorder_select.className = "HolyOrderSelect";
+			holyorder_select.name = "HolyOrderSelect";
+			holyorder_select.id = "HolyOrderSelect";
+			holyorder_select.onchange = showConventAuroranWarning;
+
+			// Choices
+			holyorder_select.appendChild( Element.createOption("The Holy Order of the Commander of Weapons", "foyer", "HolyOrderoption") );
+			holyorder_select.appendChild( Element.createOption("The Holy Order of the Eternal Lady of Weapons", "eternity", "HolyOrderoption") );
+			holyorder_select.appendChild( Element.createOption("The Holy Order of the Queen of the Ice", "aurora", "HolyOrderoption") );
+			holyorder_select.appendChild( Element.createOption("The Holy Order of the Golden Warrior", "vility", "HolyOrderoption") );
+			holyorder_select.appendChild( Element.createOption("The Holy Order of the Spirit of Life", "zerixa", "HolyOrderoption") );
+			holyorder_select.appendChild( Element.createOption("The Holy Order of the Aspect of Fire", "farar", "HolyOrderoption") );
+			holyorder_select.appendChild( Element.createOption("The Disciples of Discipline", "anylsa", "HolyOrderoption") );
+			holyorder_select.appendChild( Element.createOption("The Holy Order of the Fair Essence", "enteie", "HolyOrderoption") );
+			
+			holyorderbox.appendChild(holyorder_select);
+			showConventAuroranWarning(); // Need to trigger at least once on initialization
+			return;
 		default:
+			alert("Error in function repopulateHolyOrders, from function createHolyOrderbox; unsuppored choice in element JoinHolyOrderSelect ");
 			return;
 
 	}
 
 }
 
+// If you're a Convent Auroran and not a part of the correct order, print a warning
+function showConventAuroranWarning() {
 
+	let race = document.getElementById('RaceSelect').value;
+	let holyorderbox = document.getElementById('HolyOrderbox');
+	let order_choice = document.getElementById('HolyOrderSelect').value;
 
+	if ( !warningMessagePrinted && race == "convent auroran" && !( order_choice == "aurora" || order_choice == "enteie" ) ) {
+		holyorderbox.appendChild( Element.createLine("This will result in exile!", "ConventAuroranWarning", "ConventAuroranWarning" ) );
+		warningMessagePrinted = true;
+		return;
+	}
+	if ( warningMessagePrinted && race == "convent auroran" && (order_choice == "aurora" || order_choice == "enteie") ) {
+		//alert("Triggers");
+		holyorderbox.removeChild(holyorderbox.lastChild);
+		warningMessagePrinted = false;
+		return;
+	}
 
+}
 
+// Upon changing race, need to update holy order warning about exile
+function updateOrderWarnings() {
 
-function createHolyOrderbox() {
+	let holyorderbox = document.getElementById('HolyOrderbox');
+	let race = document.getElementById('RaceSelect').value;
 
-	// Pick if in holy order first
-	// from here, go from there
-	return;
+	let is_in_order = document.getElementById('JoinHolyOrderSelect').value;
+	if ( is_in_order == "no" ) return;
+
+	let order_choice = document.getElementById('HolyOrderSelect').value;
+
+	// If new race is not Convent Auroran and warning message is printed
+	// Then remove warning
+	if ( race != "convent auroran" && warningMessagePrinted ) {
+		holyorderbox.removeChild(holyorderbox.lastChild);
+		warningMessagePrinted = false;
+		return;
+	}
+	// If new race is Convent Auroran and order is one that should result in exile
+	// print warning
+	if ( race == "convent auroran" && !( order_choice == "aurora" || order_choice == "enteie" ) ) {
+		holyorderbox.appendChild( Element.createLine("This will result in exile!", "ConventAuroranWarning", "ConventAuroranWarning" ) );
+		warningMessagePrinted = true;
+		return;
+	}
 
 }
 
@@ -375,33 +445,6 @@ function finishCreation() {
 	PopWindow.style.display = "none";
 	//alert("Button triggers");
 
-}
-
-
-
-
-
-
-/*
-function notice() {
-	alert("Button triggers");
-}
-
-
-function echoMale() {
-	let PopWindow = document.getElementById("PopWin");
-	let PopWindowContent = document.getElementById("PopWinCont");
-	PopWindowContent.innerHTML = "";
-	PopWindow.style.display = "none";
-	Engine.GUI.WritetoStorystream("You are male");
+	// Save character data here
 
 }
-
-
-function echoFemale() {
-	let PopWindow = document.getElementById("PopWin");
-	let PopWindowContent = document.getElementById("PopWinCont");
-	PopWindowContent.innerHTML = "";
-	PopWindow.style.display = "none";
-	Engine.GUI.WritetoStorystream("You are female");
-}*/

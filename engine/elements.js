@@ -53,3 +53,15 @@ export function createNumberInput( name, className, min = 0, max = 100 ) {
 	return ret;
 
 }
+
+// Create just a simple line of text
+export function createLine( textContent, className, name ) {
+
+	let ret = document.createElement('div');
+	ret.className = className;
+	ret.name = name;
+	ret.textContent = textContent;
+
+	return ret;
+
+}
