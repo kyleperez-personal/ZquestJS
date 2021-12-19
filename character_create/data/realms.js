@@ -6,7 +6,7 @@ class Realm {
 	#_value;
 	#_regions;
 
-	#_is_enabled;
+	#_isEnabled;
 
 	constructor(
 		long_name,
@@ -17,13 +17,15 @@ class Realm {
 		this.#_name = long_name;
 		this.#_value = identifier.toLowerCase();
 		this.#_regions = const_regions;
-		this.#_is_enabled = enabled;
+
+		this.#_isEnabled = enabled;
 	}
 
 	name() { return this.#_name; }
 	value() { return this.#_value; }
 	regions() { return this.#_regions; }
-	is_enabled() { return this.#_is_enabled; }
+	
+	isEnabled() { return this.#_isEnabled; }
 
 }
 

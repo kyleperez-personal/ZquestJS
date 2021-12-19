@@ -2,17 +2,20 @@ class HolyOrder {
 
 	#_name;
 	#_value;
-	#_is_enabled;
+
+	#_isEnabled;
 
 	constructor( holyorder_name, holyorder_value, enabled ) {
 		this.#_name = holyorder_name;
 		this.#_value = holyorder_value.toLowerCase();
-		this.#_is_enabled = enabled;
+		
+		this.#_isEnabled = enabled;
 	}
 
 	name() { return this.#_name; }
 	value() { return this.#_value; }
-	is_enabled() { return this.#_is_enabled; }
+
+	isEnabled() { return this.#_isEnabled; }
 
 }
 

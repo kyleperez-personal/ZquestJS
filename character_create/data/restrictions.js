@@ -34,3 +34,11 @@ export function military_careers_allowed(gender, nationality, in_holy_order) {
 	return gender == "male" || nationality != "empire" || in_holy_order == "yes";
 
 }
+
+
+// IE: nobles exist only in the empire (excepting Kathay)
+export function nobility_allowed(nationality, region) {
+
+	return nationality == "empire" && region != "kathay";
+
+}

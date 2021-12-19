@@ -6,14 +6,22 @@ import * as Race from './data/races.js';
 import * as Realm from './data/realms.js';
 import * as HolyOrder from './data/holyorders.js';
 import * as Career from './data/careers.js';
+import * as Background from './data/backgrounds.js';
 
 import * as Restrictions from './data/restrictions.js';
 
 // TODO
 /*
-	Put Holy Orders into thier own file
-	Finish Career and Backgrounds sections
-*/
+	set Convent Auroran Exile status
+	set flags on form leave
+		-- diasporic: from location other than race's home location
+		-- settler: Imperial subject in Empire + diasporic
+		-- imperial status: provincial if Imperial from provinces, governorate otherwise
+	Cstphene Guardsman status question if from Cstphon and in army and not in holy order
+	Ask if served in Lizard War if age is high enough and in military
+	
+	Will have to pass all fields to system
+	*/
 // NOTICE:
 // Currently input for text boxes doesn't work!
 
@@ -66,20 +74,13 @@ import * as Restrictions from './data/restrictions.js';
 		class CareerLabel
 		class Careeroption
 
+		class Backgroundbox
+		class BackgroundSelect
+		class BackgroundLabel
+		class Backgroundoption
+
 		class Confirm
 		class ConfirmButton
-*/
-
-/*
-	Things to include:
-		Name Select (depends on background; includes short name)
-		Gender select
-		Age Select
-		Race Select
-		Location Select
-		Holy Order Select
-		Career Select
-		Background Select
 */
 
 const PopWindow = document.getElementById('PopWin');
@@ -87,6 +88,7 @@ const PopWindowContent = document.getElementById('PopWinCont');
 
 // Need to usee this as a global variable to make things work
 let warningMessagePrinted = false;
+let nobilaryBoxWritten = false;
 
 
 // Make the character creation form
@@ -100,7 +102,7 @@ export function CharacterCreate() {
 	createLocationbox();
 	createHolyOrderbox();
 	createCareerbox();
-	// createBackgroundbox();
+	createBackgroundbox();
 
 	createExitButton();
 
@@ -126,6 +128,7 @@ function createNameboxes() {
 	// Create Box to enter in name
 	let nameboxes = document.createElement('div');
 	nameboxes.className = "Nameboxes";
+	nameboxes.id = "Nameboxes";
 
 	// Create forename, surname, and shortname entries
 	nameboxes.appendChild( Element.createLabel("Forenames: ", "ForenameSelect", "NameLabel") );
@@ -160,7 +163,7 @@ function createGenderbox() {
 	gender_select.name = "GenderSelect";
 	gender_select.id = "GenderSelect";
 
-	gender_select.onchange = repopulateCareers;
+	gender_select.onchange = function() {repopulateCareers(); };
 
 	// Create male and female gender options
 	// If really want to, can add more in genders.js file
@@ -209,7 +212,7 @@ function createRacebox() {
 
 	// If race changes from Convent Auroran to something else
 	// or something else to Convent Auroran, need to print messages
-	race_select.onchange = updateOrderWarnings;
+	race_select.onchange = function() { updateOrderWarnings(); };
 
 	racebox.appendChild(race_select);
 
@@ -231,8 +234,11 @@ function createLocationbox() {
 	realm_select.className = "RealmSelect";
 	realm_select.name = "RealmSelect";
 	realm_select.id = "RealmSelect";
-	realm_select.onchange = repopulateRegions;
-	realm_select.onchange = repopulateCareers;
+	realm_select.onchange = function () {
+		repopulateRegions();
+		repopulateCareers();
+		repopulateBackgrounds();
+	};
 
 	// Add realms
 	Realm.Realms.forEach( function(element) { Element.conditionalCreateOption( element, realm_select, "Realmoption", true ); } );
@@ -252,6 +258,7 @@ function createLocationbox() {
 	region_select.className = "RegionSelect";
 	region_select.id = "RegionSelect";
 	region_select.name = "RegionSelect";
+	region_select.onchange = function() { repopulateBackgrounds(); };
 
 	regionbox.appendChild(region_select);
 
@@ -265,15 +272,16 @@ function repopulateRegions() {
 	
 	// Get the value of RealmSelect
 	let realm = document.getElementById('RealmSelect').value;
-	let region_options = document.getElementById("RegionSelect");
+	let region_select = document.getElementById("RegionSelect");
 
 	// Then remove the children of the region_select options
-	while ( region_options.firstChild ) region_options.removeChild(region_options.firstChild)
+	while ( region_select.firstChild ) region_select.removeChild(region_select.firstChild);
+	//alert("Triggers");
 	
 	// Populate choosable realms
 	for ( let rlm of Realm.Realms ) {
 		if ( rlm.value() == realm ) {
-			rlm.regions().forEach( function(element) { Element.conditionalCreateOption( element, region_options, "Regionoption", true ); } );
+			rlm.regions().forEach( function(element) { Element.conditionalCreateOption( element, region_select, "Regionoption", true ); } );
 			return;
 		}
 	}
@@ -296,8 +304,10 @@ function createHolyOrderbox() {
 	joinholyorder_select.name = "JoinHolyOrderSelect";
 	joinholyorder_select.id = "JoinHolyOrderSelect";
 	// If Yes, then show holy orders and no, hide them
-	joinholyorder_select.onchange = repopulateHolyOrders;
-	joinholyorder_select.onchange = repopulateCareers;
+	joinholyorder_select.onchange = function() {
+		repopulateHolyOrders();
+		repopulateCareers();
+	};
 
 	// Choices (yes and no) here
 	joinholyorder_select.appendChild( Element.createOption("No", "no", "JoinHolyOrderoption") );
@@ -337,7 +347,7 @@ function repopulateHolyOrders() {
 			holyorder_select.className = "HolyOrderSelect";
 			holyorder_select.name = "HolyOrderSelect";
 			holyorder_select.id = "HolyOrderSelect";
-			holyorder_select.onchange = showConventAuroranWarning;
+			holyorder_select.onchange = function() { showConventAuroranWarning(); };
 
 			// Choices
 			HolyOrder.HolyOrders.forEach( function(element) { Element.conditionalCreateOption( element, holyorder_select, "HolyOrderoption", true ); } );
@@ -449,7 +459,7 @@ function repopulateCareers() {
 	else {
 		Career.Careers.forEach(
 			function(element) {
-				let constraint = element.is_doctor() || !element.is_military();
+				let constraint = element.isDoctor() || !element.isMilitary();
 				Element.conditionalCreateOption( element, career_select, "Careeroption", constraint );
 			}
 		);
@@ -461,7 +471,82 @@ function repopulateCareers() {
 
 function createBackgroundbox() {
 
-	return;
+	let backgroundbox = document.createElement('div');
+	backgroundbox.className = "Backgroundbox";
+	backgroundbox.id = "Backgroundbox";
+
+	// Whether or not you are in a holy order label
+	backgroundbox.appendChild( Element.createLabel("Background: ", "BackgroundSelect", "BackgroundLabel") );
+
+	// Add selection box for picking if in holy order or not
+	let background_select = document.createElement('select');
+	background_select.className = "BackgroundSelect";
+	background_select.name = "BackgroundSelect";
+	background_select.id = "BackgroundSelect";
+	background_select.onchange = function() { modifyNobilaryBox(); }
+
+	backgroundbox.appendChild(background_select);
+	PopWindowContent.appendChild(backgroundbox);
+
+	repopulateBackgrounds();
+
+}
+
+// If something notable changes, need to change availible backgrounds
+function repopulateBackgrounds() {
+
+	// Reset background options
+	let background_select = document.getElementById("BackgroundSelect");
+	while ( background_select.firstChild ) background_select.removeChild(background_select.firstChild)
+
+	let nationality = document.getElementById("RealmSelect").value;
+	let region = document.getElementById("RegionSelect").value;
+
+	if ( Restrictions.nobility_allowed(nationality, region) ) {
+		Background.Backgrounds.forEach( function(element) { Element.conditionalCreateOption( element, background_select, "Backgroundoption", true ); } );
+	}
+	else {
+		Background.Backgrounds.forEach(
+			function(element) {
+				let constraint = !element.isNoble()
+				Element.conditionalCreateOption( element, background_select, "Backgroundoption", constraint );
+			}
+		);
+	}
+
+	// Change nobilary box if necessary
+	modifyNobilaryBox();
+
+}
+
+function modifyNobilaryBox() {
+
+	let nameboxes = document.getElementById("Nameboxes");
+	let backgrnd = document.getElementById("BackgroundSelect").value;
+
+	// Determine if noble status is in current background
+	let nbl_status = false;
+	for ( let b of Background.Backgrounds ) {
+		if ( b.value() == backgrnd ) {
+			nbl_status = b.isNoble();
+			break;
+		}
+	}
+
+	// If box has already been written + new status is noble, do nothing
+	if ( (nobilaryBoxWritten && nbl_status) || (!nobilaryBoxWritten && !nbl_status) ) return;
+	
+	// If noble box is written and am not noble, remove noble box
+	if ( nobilaryBoxWritten && !nbl_status ) {
+		nameboxes.removeChild(nameboxes.lastChild);
+		nameboxes.removeChild(nameboxes.lastChild);
+		nobilaryBoxWritten = false;
+	}
+	if ( !nobilaryBoxWritten && nbl_status ) {
+		nameboxes.appendChild( Element.createLabel("Nobilary: ", "NobilarySelect", "NameLabel") );
+		nameboxes.appendChild( Element.createTextInput("NobilarySelect", "NobilarySelect") );
+		nobilaryBoxWritten = true;
+	}
 
 }
 

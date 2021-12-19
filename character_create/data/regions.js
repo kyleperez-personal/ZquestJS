@@ -3,7 +3,7 @@ class Region {
 	#_name;
 	#_value;
 
-	#_is_enabled;
+	#_isEnabled;
 
 	constructor(
 		region_name,
@@ -12,12 +12,14 @@ class Region {
 	) {
 		this.#_name = region_name;
 		this.#_value = region_value.toLowerCase();
-		this.#_is_enabled = enabled;
+
+		this.#_isEnabled = enabled;
 	}
 
 	name() { return this.#_name; }
 	value() { return this.#_value; }
-	is_enabled() { return this.#_is_enabled; }
+	
+	isEnabled() { return this.#_isEnabled; }
 
 }
 
