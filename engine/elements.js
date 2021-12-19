@@ -65,3 +65,9 @@ export function createLine( textContent, className, name ) {
 	return ret;
 
 }
+
+// Selectively append an html element to another element
+// Done if element is listed as enabled plus constraint is satisfied
+export function conditionalCreateOption( element, parent_element, style, constraint = true ) {
+	if ( element.is_enabled() && constraint ) parent_element.appendChild( createOption(element.name(), element.value(), style) );
+}

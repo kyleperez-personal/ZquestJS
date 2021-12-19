@@ -1,11 +1,13 @@
-import * as GUI from '../engine/gui.js';
-import * as AgeConstants from './set_age/contants.js';
+//import * as GUI from '../engine/gui.js';
+import * as Constants from './data/contants.js';
 import * as Element from '../engine/elements.js';
-import * as Gender from './set_gender/genders.js';
-import * as Race from './set_race/races.js';
-import * as Realm from './set_locations/realms.js';
-import * as HolyOrder from './set_holyorder/holyorders.js';
-import * as Career from './set_careers/careers.js';
+import * as Gender from './data/genders.js';
+import * as Race from './data/races.js';
+import * as Realm from './data/realms.js';
+import * as HolyOrder from './data/holyorders.js';
+import * as Career from './data/careers.js';
+
+import * as Restrictions from './data/restrictions.js';
 
 // TODO
 /*
@@ -48,7 +50,7 @@ import * as Career from './set_careers/careers.js';
 		class Regionbox
 		class RegionLabel
 		class RegionSelect
-		class Regionoptions
+		class Regionoption
 
 		class HolyOrderbox
 		class JoinHolyOrderSelect
@@ -156,11 +158,14 @@ function createGenderbox() {
 	let gender_select = document.createElement('select');
 	gender_select.className = "GenderSelect";
 	gender_select.name = "GenderSelect";
+	gender_select.id = "GenderSelect";
+
+	gender_select.onchange = repopulateCareers;
 
 	// Create male and female gender options
 	// If really want to, can add more in genders.js file
 	// Construct below lets us do so easily!
-	Gender.Genders.forEach( function(element) { gender_select.appendChild( Element.createOption(element.name(), element.value(), "Genderoption") ); } );
+	Gender.Genders.forEach( function(element) { Element.conditionalCreateOption( element, gender_select, "Genderoption", true ); } );
 
 	// add genders to selection
 	genderbox.appendChild(gender_select);
@@ -178,7 +183,7 @@ function createAgebox() {
 
 	// Age Label and Input
 	agebox.appendChild( Element.createLabel("Age: ", "AgeSelect", "AgeLabel") );
-	agebox.appendChild( Element.createNumberInput( "AgeSelect", "AgeSelect", AgeConstants.MIN_PLAYER_AGE, AgeConstants.MAX_PLAYER_AGE ) );
+	agebox.appendChild( Element.createNumberInput( "AgeSelect", "AgeSelect", Constants.MIN_PLAYER_AGE, Constants.MAX_PLAYER_AGE ) );
 
 	PopWindowContent.appendChild(agebox);
 
@@ -200,7 +205,7 @@ function createRacebox() {
 	race_select.id = "RaceSelect";
 
 	// Populate races to 'select'
-	Race.Races.forEach( function(element) { race_select.appendChild( Element.createOption(element.name(), element.value(), "Raceoption") ); } );
+	Race.Races.forEach( function(element) { Element.conditionalCreateOption( element, race_select, "Raceoption", true ); } );
 
 	// If race changes from Convent Auroran to something else
 	// or something else to Convent Auroran, need to print messages
@@ -227,9 +232,10 @@ function createLocationbox() {
 	realm_select.name = "RealmSelect";
 	realm_select.id = "RealmSelect";
 	realm_select.onchange = repopulateRegions;
+	realm_select.onchange = repopulateCareers;
 
 	// Add realms
-	Realm.Realms.forEach( function(element) { realm_select.appendChild( Element.createOption(element.name(), element.value(), "Realmoption") ); } );
+	Realm.Realms.forEach( function(element) { Element.conditionalCreateOption( element, realm_select, "Realmoption", true ); } );
 
 	// Add selection box
 	locationbox.appendChild(realm_select);
@@ -267,7 +273,7 @@ function repopulateRegions() {
 	// Populate choosable realms
 	for ( let rlm of Realm.Realms ) {
 		if ( rlm.value() == realm ) {
-			rlm.regions().forEach( function(element) { region_options.appendChild( Element.createOption(element.name(), element.value(), "Realmoption") ); });
+			rlm.regions().forEach( function(element) { Element.conditionalCreateOption( element, region_options, "Regionoption", true ); } );
 			return;
 		}
 	}
@@ -291,6 +297,7 @@ function createHolyOrderbox() {
 	joinholyorder_select.id = "JoinHolyOrderSelect";
 	// If Yes, then show holy orders and no, hide them
 	joinholyorder_select.onchange = repopulateHolyOrders;
+	joinholyorder_select.onchange = repopulateCareers;
 
 	// Choices (yes and no) here
 	joinholyorder_select.appendChild( Element.createOption("No", "no", "JoinHolyOrderoption") );
@@ -313,8 +320,8 @@ function repopulateHolyOrders() {
 		// If no, need to remove holy order selection info
 		case "no":
 			// Need to check if Convent Auroran is the currently selected race
-			let race = document.getElementById('RaceSelect').value;
-			let order_choice = document.getElementById('HolyOrderSelect').value;
+			//let race = document.getElementById('RaceSelect').value;
+			//let order_choice = document.getElementById('HolyOrderSelect').value;
 
 			if ( warningMessagePrinted ) holyorderbox.removeChild(holyorderbox.lastChild);
 			holyorderbox.removeChild(holyorderbox.lastChild);
@@ -333,7 +340,7 @@ function repopulateHolyOrders() {
 			holyorder_select.onchange = showConventAuroranWarning;
 
 			// Choices
-			HolyOrder.HolyOrders.forEach( function(element) { holyorder_select.appendChild( Element.createOption(element.name(), element.value(), "HolyOrderoption") ); } );
+			HolyOrder.HolyOrders.forEach( function(element) { Element.conditionalCreateOption( element, holyorder_select, "HolyOrderoption", true ); } );
 
 			holyorderbox.appendChild(holyorder_select);
 			showConventAuroranWarning(); // Need to trigger at least once on initialization
@@ -353,13 +360,12 @@ function showConventAuroranWarning() {
 	let holyorderbox = document.getElementById('HolyOrderbox');
 	let order_choice = document.getElementById('HolyOrderSelect').value;
 
-	if ( !warningMessagePrinted && race == "convent auroran" && !( order_choice == "aurora" || order_choice == "enteie" ) ) {
+	if ( !warningMessagePrinted && Restrictions.is_convent_and_in_unallowed_order(race, order_choice) ) {
 		holyorderbox.appendChild( Element.createLine("This will result in exile!", "ConventAuroranWarning", "ConventAuroranWarning" ) );
 		warningMessagePrinted = true;
 		return;
 	}
-	if ( warningMessagePrinted && race == "convent auroran" && (order_choice == "aurora" || order_choice == "enteie") ) {
-		//alert("Triggers");
+	if ( warningMessagePrinted && Restrictions.is_convent_and_in_allowed_order(race, order_choice) ) {
 		holyorderbox.removeChild(holyorderbox.lastChild);
 		warningMessagePrinted = false;
 		return;
@@ -380,14 +386,14 @@ function updateOrderWarnings() {
 
 	// If new race is not Convent Auroran and warning message is printed
 	// Then remove warning
-	if ( race != "convent auroran" && warningMessagePrinted ) {
+	if ( !Restrictions.is_convent() && warningMessagePrinted ) {
 		holyorderbox.removeChild(holyorderbox.lastChild);
 		warningMessagePrinted = false;
 		return;
 	}
 	// If new race is Convent Auroran and order is one that should result in exile
 	// print warning
-	if ( race == "convent auroran" && !( order_choice == "aurora" || order_choice == "enteie" ) ) {
+	if ( Restrictions.is_convent_and_in_unallowed_order(race, order_choice) ) {
 		holyorderbox.appendChild( Element.createLine("This will result in exile!", "ConventAuroranWarning", "ConventAuroranWarning" ) );
 		warningMessagePrinted = true;
 		return;
@@ -397,7 +403,7 @@ function updateOrderWarnings() {
 
 
 
-// Need to repopulate selects if nationality/holy order status changes
+// Need to repopulate selects if gender/nationality/holy order status changes
 function createCareerbox() {
 
 	let careerbox = document.createElement('div');
@@ -413,11 +419,41 @@ function createCareerbox() {
 	career_select.name = "CareerSelect";
 	career_select.id = "CareerSelect";
 
-	// Choices
-	Career.Careers.forEach( function(element) { career_select.appendChild( Element.createOption(element.name(), element.value(), "Careeroption") ); } );
-
 	careerbox.appendChild(career_select);
 	PopWindowContent.appendChild(careerbox);
+
+	repopulateCareers();
+
+	
+
+}
+
+// If a notable thing changes, need to update potential careers
+function repopulateCareers() {
+
+	// Reset the career options
+	let career_select = document.getElementById("CareerSelect");
+	while ( career_select.firstChild ) career_select.removeChild(career_select.firstChild)
+
+	let gender = document.getElementById("GenderSelect").value;
+	let nationality = document.getElementById("RealmSelect").value;
+	let in_holy_order = document.getElementById("JoinHolyOrderSelect").value;
+
+
+	// Men, people in holy orders, or anyone not from the Empire can hold any career
+	if ( Restrictions.military_careers_allowed(gender, nationality, in_holy_order) ) {
+		Career.Careers.forEach(	function(element) { Element.conditionalCreateOption( element, career_select, "Careeroption", true ); } );
+	}
+	// Basically women from the Empire not in Holy Orders are not able to be in the military
+	// unless they are military doctors!
+	else {
+		Career.Careers.forEach(
+			function(element) {
+				let constraint = element.is_doctor() || !element.is_military();
+				Element.conditionalCreateOption( element, career_select, "Careeroption", constraint );
+			}
+		);
+	}
 
 }
 
