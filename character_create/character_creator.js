@@ -4,6 +4,8 @@ import * as Element from '../engine/elements.js';
 import * as Gender from './set_gender/genders.js';
 import * as Race from './set_race/races.js';
 import * as Realm from './set_locations/realms.js';
+import * as HolyOrder from './set_holyorder/holyorders.js';
+import * as Career from './set_careers/careers.js';
 
 // TODO
 /*
@@ -57,6 +59,11 @@ import * as Realm from './set_locations/realms.js';
 		class HolyOrderoption
 		class HolyOrderLabel
 
+		class Careerbox
+		class CareerSelect
+		class CareerLabel
+		class Careeroption
+
 		class Confirm
 		class ConfirmButton
 */
@@ -90,7 +97,7 @@ export function CharacterCreate() {
 	createRacebox();
 	createLocationbox();
 	createHolyOrderbox();
-	// createCareerbox();
+	createCareerbox();
 	// createBackgroundbox();
 
 	createExitButton();
@@ -326,15 +333,8 @@ function repopulateHolyOrders() {
 			holyorder_select.onchange = showConventAuroranWarning;
 
 			// Choices
-			holyorder_select.appendChild( Element.createOption("The Holy Order of the Commander of Weapons", "foyer", "HolyOrderoption") );
-			holyorder_select.appendChild( Element.createOption("The Holy Order of the Eternal Lady of Weapons", "eternity", "HolyOrderoption") );
-			holyorder_select.appendChild( Element.createOption("The Holy Order of the Queen of the Ice", "aurora", "HolyOrderoption") );
-			holyorder_select.appendChild( Element.createOption("The Holy Order of the Golden Warrior", "vility", "HolyOrderoption") );
-			holyorder_select.appendChild( Element.createOption("The Holy Order of the Spirit of Life", "zerixa", "HolyOrderoption") );
-			holyorder_select.appendChild( Element.createOption("The Holy Order of the Aspect of Fire", "farar", "HolyOrderoption") );
-			holyorder_select.appendChild( Element.createOption("The Disciples of Discipline", "anylsa", "HolyOrderoption") );
-			holyorder_select.appendChild( Element.createOption("The Holy Order of the Fair Essence", "enteie", "HolyOrderoption") );
-			
+			HolyOrder.HolyOrders.forEach( function(element) { holyorder_select.appendChild( Element.createOption(element.name(), element.value(), "HolyOrderoption") ); } );
+
 			holyorderbox.appendChild(holyorder_select);
 			showConventAuroranWarning(); // Need to trigger at least once on initialization
 			return;
@@ -397,9 +397,27 @@ function updateOrderWarnings() {
 
 
 
+// Need to repopulate selects if nationality/holy order status changes
 function createCareerbox() {
 
-	return;
+	let careerbox = document.createElement('div');
+	careerbox.className = "Careerbox";
+	careerbox.id = "Careerbox";
+
+	// Whether or not you are in a holy order label
+	careerbox.appendChild( Element.createLabel("Career: ", "CareerSelect", "CareerLabel") );
+
+	// Add selection box for picking if in holy order or not
+	let career_select = document.createElement('select');
+	career_select.className = "CareerSelect";
+	career_select.name = "CareerSelect";
+	career_select.id = "CareerSelect";
+
+	// Choices
+	Career.Careers.forEach( function(element) { career_select.appendChild( Element.createOption(element.name(), element.value(), "Careeroption") ); } );
+
+	careerbox.appendChild(career_select);
+	PopWindowContent.appendChild(careerbox);
 
 }
 
