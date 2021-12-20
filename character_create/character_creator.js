@@ -13,12 +13,16 @@ import * as Restrictions from './data/restrictions.js';
 // TODO
 /*
 	set Convent Auroran Exile status
+		-- DONE: Changing values when changing holy orders
+		-- TODO:
+			Make sure can't change exile status when on bad holy order
+			or changing status changes holy order
+	Cstphene Guardsman status question if from Cstphon and in army and not in holy order
+	Ask if served in Lizard War if age is high enough and in military
 	set flags on form leave
 		-- diasporic: from location other than race's home location
 		-- settler: Imperial subject in Empire + diasporic
 		-- imperial status: provincial if Imperial from provinces, governorate otherwise
-	Cstphene Guardsman status question if from Cstphon and in army and not in holy order
-	Ask if served in Lizard War if age is high enough and in military
 	
 	Will have to pass all fields to system
 	*/
@@ -79,6 +83,10 @@ import * as Restrictions from './data/restrictions.js';
 		class BackgroundLabel
 		class Backgroundoption
 
+		class ExileStatusSelect
+		class ExileLabel
+		class ExileStatusoption
+
 		class Confirm
 		class ConfirmButton
 */
@@ -89,6 +97,8 @@ const PopWindowContent = document.getElementById('PopWinCont');
 // Need to usee this as a global variable to make things work
 let warningMessagePrinted = false;
 let nobilaryBoxWritten = false;
+
+let exileBoxWritten = false;
 
 
 // Make the character creation form
@@ -212,7 +222,10 @@ function createRacebox() {
 
 	// If race changes from Convent Auroran to something else
 	// or something else to Convent Auroran, need to print messages
-	race_select.onchange = function() { updateOrderWarnings(); };
+	race_select.onchange = function() {
+		updateOrderWarnings();
+		modifyExileBox();
+	};
 
 	racebox.appendChild(race_select);
 
@@ -307,6 +320,7 @@ function createHolyOrderbox() {
 	joinholyorder_select.onchange = function() {
 		repopulateHolyOrders();
 		repopulateCareers();
+		modifyExileBox();
 	};
 
 	// Choices (yes and no) here
@@ -347,7 +361,10 @@ function repopulateHolyOrders() {
 			holyorder_select.className = "HolyOrderSelect";
 			holyorder_select.name = "HolyOrderSelect";
 			holyorder_select.id = "HolyOrderSelect";
-			holyorder_select.onchange = function() { showConventAuroranWarning(); };
+			holyorder_select.onchange = function() {
+				showConventAuroranWarning();
+				modifyExileBox();
+			};
 
 			// Choices
 			HolyOrder.HolyOrders.forEach( function(element) { Element.conditionalCreateOption( element, holyorder_select, "HolyOrderoption", true ); } );
@@ -373,13 +390,13 @@ function showConventAuroranWarning() {
 	if ( !warningMessagePrinted && Restrictions.is_convent_and_in_unallowed_order(race, order_choice) ) {
 		holyorderbox.appendChild( Element.createLine("This will result in exile!", "ConventAuroranWarning", "ConventAuroranWarning" ) );
 		warningMessagePrinted = true;
-		return;
 	}
-	if ( warningMessagePrinted && Restrictions.is_convent_and_in_allowed_order(race, order_choice) ) {
+	else if ( warningMessagePrinted && Restrictions.is_convent_and_in_allowed_order(race, order_choice) ) {
 		holyorderbox.removeChild(holyorderbox.lastChild);
 		warningMessagePrinted = false;
-		return;
 	}
+
+	//modifyExileBox();
 
 }
 
@@ -541,11 +558,90 @@ function modifyNobilaryBox() {
 		nameboxes.removeChild(nameboxes.lastChild);
 		nameboxes.removeChild(nameboxes.lastChild);
 		nobilaryBoxWritten = false;
+		return;
 	}
 	if ( !nobilaryBoxWritten && nbl_status ) {
 		nameboxes.appendChild( Element.createLabel("Nobilary: ", "NobilarySelect", "NameLabel") );
 		nameboxes.appendChild( Element.createTextInput("NobilarySelect", "NobilarySelect") );
 		nobilaryBoxWritten = true;
+		return;
+	}
+
+}
+
+
+function modifyExileBox() {
+
+	// Exile status set by race (Convent Auroran) and holy order status
+	let backgroundbox = document.getElementById("Backgroundbox");
+	let race = document.getElementById("RaceSelect").value;
+	let holy_order_status = document.getElementById("JoinHolyOrderSelect").value;
+
+	// Possible change values if everything is already written
+	if ( !exileBoxWritten && race != "convent auroran" ) {
+		alert("do nothing");
+		return;
+	}
+	else if ( exileBoxWritten && race == "convent auroran" ) {
+		alert("change value");
+		let exile_select = document.getElementById("ExileStatusSelect");
+		let holy_order_status = document.getElementById("JoinHolyOrderSelect").value;
+
+		if ( holy_order_status == "yes" ) {
+			let holy_order = document.getElementById("HolyOrderSelect").value;
+			//alert(holy_order);
+
+			for ( let h of HolyOrder.HolyOrders ) {
+				if ( h.value() == holy_order ) {
+					alert(h.value());
+					if ( h.ConventsAllowed() ) exile_select.value = "no";
+					else exile_select.value = "yes";
+					break;
+				}
+			}
+		}
+
+		return;
+	}
+	// If box written and not a convent auroran, clean up
+	else if ( exileBoxWritten && race != "convent auroran" ) {
+		alert("erase");
+		backgroundbox.removeChild(backgroundbox.lastChild);
+		backgroundbox.removeChild(backgroundbox.lastChild);
+		exileBoxWritten = false;
+		return;
+	}
+	// If not written and a convent auroran, make box
+	//else if ( !exileBoxWritten && race == "convent auroran" ) {
+	else {
+		alert("create stuff");
+		backgroundbox.appendChild( Element.createLabel("Exile Status: ", "ExileStatusSelect", "ExileLabel") );
+		
+		let exile_select = document.createElement('select');
+		exile_select.className = "ExileStatusSelect";
+		exile_select.name = "ExileStatusSelect";
+		exile_select.id = "ExileStatusSelect";
+
+		exile_select.appendChild( Element.createOption("No", "no", "ExileStatusoption") );
+		exile_select.appendChild( Element.createOption("Yes", "yes", "ExileStatusoption") );
+
+		if ( holy_order_status == "yes" ) {
+			let holy_order = document.getElementById("HolyOrderSelect").value;
+			//alert(holy_order);
+
+			for ( let h of HolyOrder.HolyOrders ) {
+				if ( h.value() == holy_order ) {
+					alert(h.value);
+					if ( h.ConventsAllowed() ) exile_select.value = "no";
+					else exile_select.value = "yes";
+					break;
+				}
+			}
+		}
+
+		backgroundbox.appendChild(exile_select);
+		exileBoxWritten = true;
+		return;
 	}
 
 }
